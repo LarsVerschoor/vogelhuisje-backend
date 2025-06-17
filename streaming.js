@@ -3,12 +3,14 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
+import cors from 'cors';
 
-const TCP_PORT   = 8001; // Raspberry pi birdhouse
-const HTTP_PORT  = 8080; // Browser HLS stream
-const STREAMS_DIR    = path.resolve('./streams');
+const TCP_PORT = 8001; // Raspberry pi birdhouse
+const HTTP_PORT = 8080; // Browser HLS stream
+const STREAMS_DIR = path.resolve('./streams');
 
 const app = express();
+app.use(cors());
 app.use('/stream', express.static(STREAMS_DIR));
 app.listen(HTTP_PORT, () =>
     console.log(`HLS on http://localhost:${HTTP_PORT}/stream/baseball.m3u8`)
