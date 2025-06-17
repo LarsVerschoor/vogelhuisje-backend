@@ -60,7 +60,7 @@ const cameraServer = net.createServer(socket => {
 
     setTimeout(() => {
         socket.write('stop-cam');
-    }, 100_000);
+    }, 300_000);
 
     socket.on('data', (chunk) => {
         console.log(chunk);
