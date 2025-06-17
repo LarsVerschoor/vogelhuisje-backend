@@ -1,55 +1,65 @@
-import net from 'net';
+import net from 'net';More actions
 import { spawn } from 'child_process';
-import WebSocket, { WebSocketServer } from 'ws';
-import http from 'http';
+import fs from 'fs';
+import path from 'path';
+import express from 'express';
+import cors from 'cors';
 
+const TCP_PORT   = 8001; // Raspberry pi birdhouse
+const HTTP_PORT  = 8080; // Browser HLS stream
+const STREAMS_DIR    = path.resolve('./streams');
 const TCP_PORT = 8001; // Raspberry pi birdhouse
 const HTTP_PORT = 8080; // Browser HLS stream
+const STREAMS_DIR = path.resolve('./streams');
 
-const server = http.createServer();
-const wss = new WebSocketServer({ server });
+const app = express();
+app.use(cors());
+app.use('/stream', express.static(STREAMS_DIR));
+app.listen(HTTP_PORT, () =>
+    console.log(`HLS on http://localhost:${HTTP_PORT}/stream/baseball.m3u8`)
+);
 
-let clients = [];
+fs.mkdirSync(STREAMS_DIR, { recursive: true });
 
-wss.on('connection', (socket) => {
-    console.log('client connected');
-    clients.push(socket);
+let ffmpeg = null;
 
-    socket.on('close', () => {
-       clients = clients.filter(s => s !== socket);
-       console.log('client disconnected');
+function startFfmpeg() {
+    if (ffmpeg) return ffmpeg;
+
+    fs.readdirSync(STREAMS_DIR).forEach(f =>
+        fs.unlinkSync(path.join(STREAMS_DIR, f))
+    );
+
+    const args = [
+        '-i', 'pipe:0',
+        '-c:v', 'copy',
+        '-f', 'hls',
+        '-hls_time', '2',
+        '-hls_list_size', '5',
+        '-hls_flags', 'delete_segments',
+        '-hls_segment_filename', path.join(STREAMS_DIR, '%04d.ts'),
+        path.join(STREAMS_DIR, 'baseball.m3u8')
+    ];
+
+    ffmpeg = spawn('ffmpeg', args, { stdio: ['pipe', 'inherit', 'inherit'] });
+    console.log('FFmpeg started (single stream)');
+
+    ffmpeg.on('exit', c => {
+        console.log(`FFmpeg exited (${c})`);
+        ffmpeg = null;
     });
-})
 
-server.listen(HTTP_PORT, () => {
-    console.log(`WebSocket server running on ws://localhost:${HTTP_PORT}`);
-});
+    return ffmpeg;
+}
 
-const ffmpeg = spawn('ffmpeg', [
-    '-f', 'h264',
-    '-i', 'pipe:0',
-    '-f', 'mpegts',
-    '-codec:v', 'mpeg1video',
-    '-s', '640x480',
-    '-b:v', '800k',
-    '-r', '30',
-    '-'
-], { stdio: ['pipe', 'pipe', 'inherit'] });
-
-ffmpeg.stdout.on('data', (chunk) => {
-    clients.forEach((socket) => {
-        if (socket.readyState === WebSocket.OPEN) {
-            socket.send(chunk);
-        }
-    });
-});
-
-const cameraServer = net.createServer(socket => {
+// Camera Server
+net.createServer(socket => {
     console.log('Camera connected');
 
     socket.write('start-cam');
 
-    socket.pipe(ffmpeg.stdin);
+    const ff = startFfmpeg();
+    socket.pipe(ff.stdin);
 
     setTimeout(() => {
         socket.write('stop-cam');
@@ -61,9 +71,7 @@ const cameraServer = net.createServer(socket => {
 
     socket.on('close', () => {
         console.log('Camera disconnected');
-        ffmpeg.stdin.end();
-        setTimeout(() => ffmpeg?.kill('SIGINT'), 500);
+        ff.stdin.end();
+        setTimeout(() => ff?.kill('SIGINT'), 500);
     });
 });
-
-cameraServer.listen(TCP_PORT, () => console.log(`Connected with camera on port ${TCP_PORT}`));
