@@ -1,0 +1,26 @@
+{
+  "name": "vogelhuisje-backend",
+  "version": "1.0.0",
+  "description": "De backend voor het TLE 2 Deel 2 digitale vogelhuisje",
+  "homepage": "https://github.com/LarsVerschoor/vogelhuisje-backend#readme",
+  "bugs": {
+    "url": "https://github.com/LarsVerschoor/vogelhuisje-backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LarsVerschoor/vogelhuisje-backend.git"
+  },
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.0"
+  }
+}
