@@ -1,13 +1,10 @@
-import net from 'net';More actions
+import net from 'net';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
 import cors from 'cors';
 
-const TCP_PORT   = 8001; // Raspberry pi birdhouse
-const HTTP_PORT  = 8080; // Browser HLS stream
-const STREAMS_DIR    = path.resolve('./streams');
 const TCP_PORT = 8001; // Raspberry pi birdhouse
 const HTTP_PORT = 8080; // Browser HLS stream
 const STREAMS_DIR = path.resolve('./streams');
@@ -52,8 +49,8 @@ function startFfmpeg() {
     return ffmpeg;
 }
 
-// Camera Server
-net.createServer(socket => {
+
+const cameraServer = net.createServer(socket => {
     console.log('Camera connected');
 
     socket.write('start-cam');
@@ -75,3 +72,5 @@ net.createServer(socket => {
         setTimeout(() => ff?.kill('SIGINT'), 500);
     });
 });
+
+cameraServer.listen(TCP_PORT, () => console.log(`Connected with camera on port ${TCP_PORT}`));
