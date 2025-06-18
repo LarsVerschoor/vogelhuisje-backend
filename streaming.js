@@ -58,9 +58,9 @@ const cameraServer = net.createServer(socket => {
     const ff = startFfmpeg();
     socket.pipe(ff.stdin);
 
-    setTimeout(() => {
-        socket.write('stop-cam');
-    }, 100_000);
+    // setTimeout(() => {
+    //     socket.write('stop-cam');
+    // }, 100_000);
 
     socket.on('data', (chunk) => {
         console.log(chunk);
