@@ -29,13 +29,12 @@ function startFfmpeg() {
 
     const args = [
         '-i', 'pipe:0',
-        '-c:v', 'libx264',
+        '-c:v', 'copy',
         '-f', 'hls',
         '-hls_time', '2',
         '-hls_list_size', '5',
-        '-hls_flags', 'delete_segments+append_list',
+        '-hls_flags', 'delete_segments',
         '-hls_segment_filename', path.join(STREAMS_DIR, '%04d.ts'),
-        '-hls_start_number_source', 'epoch',
         path.join(STREAMS_DIR, 'baseball.m3u8')
     ];
 
