@@ -29,7 +29,7 @@ function startFfmpeg() {
 
     const args = [
         '-i', 'pipe:0',
-        '-c:v', 'copy',
+        '-c:v', 'libx264',
         '-f', 'hls',
         '-hls_time', '5',
         '-hls_list_size', '15',
