@@ -17,6 +17,9 @@ const server = http.createServer(app);
 import router from './routes/index.js';
 app.use('/', router);
 
+import usersRouter from './routes/users.js';
+app.use('/users', usersRouter);
+
 import User from './models/User.js';
 
 app.get('/test-create-user', async (req, res) => {

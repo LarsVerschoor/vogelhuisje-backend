@@ -95,4 +95,15 @@ router.delete('/:user_id', async (req, res) => {
     }
 });
 
+/**
+ * @route GET /users/test-user
+ * @desc Haal een testgebruiker op voor frontend testing
+ */
+router.get('/test-user', (req, res) => {
+    res.json({
+        name: 'Test User',
+        email: 'test@example.com'
+    });
+});
+
 export default router;
