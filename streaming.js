@@ -31,7 +31,7 @@ function startFfmpeg() {
         '-i', 'pipe:0',
         '-c:v', 'copy',
         '-f', 'hls',
-        '-hls_time', '2',
+        '-hls_time', '5',
         '-hls_list_size', '15',
         '-hls_flags', 'delete_segments+append_list',
         '-hls_segment_filename', path.join(STREAMS_DIR, '%04d.ts'),
