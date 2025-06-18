@@ -23,9 +23,9 @@ let ffmpeg = null;
 function startFfmpeg() {
     if (ffmpeg) return ffmpeg;
 
-    // fs.readdirSync(STREAMS_DIR).forEach(f =>
-    //     fs.unlinkSync(path.join(STREAMS_DIR, f))
-    // );
+    fs.readdirSync(STREAMS_DIR).forEach(f =>
+        fs.unlinkSync(path.join(STREAMS_DIR, f))
+    );
 
     const args = [
         '-i', 'pipe:0',
