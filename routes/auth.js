@@ -6,11 +6,22 @@ import User from '../models/User.js';
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
 
     try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'E-mail is al in gebruik' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ email, password: hashedPassword });
+        const userCount = await User.countDocuments();
+        const newUser = new User({
+            user_id: userCount + 1,
+            email,
+            password: hashedPassword,
+            name
+        });
         await newUser.save();
         res.status(201).json({ message: 'Gebruiker geregistreerd' });
     } catch (err) {
@@ -28,6 +39,9 @@ router.post('/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ error: 'Wachtwoord klopt niet' });
 
+        if (!process.env.JWT_SECRET) {
+            return res.status(500).json({ error: 'JWT_SECRET is not defined in environment variables' });
+        }
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({ message: 'Ingelogd', token });
     } catch (err) {
