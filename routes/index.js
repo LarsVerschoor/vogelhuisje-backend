@@ -6,6 +6,7 @@ import shopitems from "./shopitems.js";
 import recordings from "./recordings.js";
 import rentals from "./rentals.js";
 import users from "./users.js";
+import cameras from "./cameras.js";
 
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.use('/shopitems', shopitems);
 router.use('/recordings', recordings);
 router.use('/rentals', rentals)
 router.use('/users', users)
+router.use('/cameras', cameras)
 
 export default router;

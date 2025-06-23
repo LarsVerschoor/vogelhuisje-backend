@@ -4,6 +4,7 @@ configEnv();
 import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
+import cors from 'cors'
 
 // Connect to MongoDB using the URI from .env
 await mongoose.connect(process.env.MONGODB_URI, {
@@ -13,6 +14,8 @@ await mongoose.connect(process.env.MONGODB_URI, {
 
 const app = express();
 const server = http.createServer(app);
+app.use(express.json());
+app.use(cors());
 
 import router from './routes/index.js';
 app.use('/', router);
