@@ -1,5 +1,6 @@
 import express from 'express';
-import User from '../models/User.js'; // Zorg ervoor dat het pad klopt volgens jouw projectstructuur
+import User from '../models/User.js';// Zorg ervoor dat het pad klopt volgens jouw projectstructuur
+import requireAuth from "../middlewares/requireAuth.js";
 
 const router = express.Router();
 
@@ -20,13 +21,19 @@ router.get('/', async (req, res) => {
  * @route GET /users/:user_id
  * @desc Haal gegevens van een specifieke gebruiker op
  */
-router.get('/:user_id', async (req, res) => {
+router.get('/:user_id', requireAuth, async (req, res) => {
     try {
-        const user = await User.findOne({ user_id: req.params.user_id });
+        const user = await User.findById(req.params.user_id).select('name email created_at _id');
         if (!user) {
             return res.status(404).json({ success: false, message: 'Gebruiker niet gevonden' });
         }
-        res.status(200).json({ success: true, data: user });
+        if (!user._id.equals(req.user._id)) return res.status(403).json({error: "You only have access to your own user data"});
+        res.status(200).json({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            created_at: user.created_at
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Fout bij het ophalen van de gebruiker', error });
     }

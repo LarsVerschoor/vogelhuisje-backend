@@ -5,14 +5,12 @@ import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
 
-// Connect to MongoDB using the URI from .env
-await mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+await mongoose.connect(process.env.MONGODB_URI);
 
 const app = express();
 const server = http.createServer(app);
+
+app.use(express.json());
 
 import router from './routes/index.js';
 app.use('/', router);
