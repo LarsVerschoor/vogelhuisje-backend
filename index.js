@@ -6,16 +6,14 @@ import http from 'http';
 import mongoose from 'mongoose';
 import cors from 'cors'
 
-// Connect to MongoDB using the URI from .env
-await mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+await mongoose.connect(process.env.MONGODB_URI);
 
 const app = express();
 const server = http.createServer(app);
 app.use(express.json());
 app.use(cors());
+
+app.use(express.json());
 
 import router from './routes/index.js';
 app.use('/', router);
