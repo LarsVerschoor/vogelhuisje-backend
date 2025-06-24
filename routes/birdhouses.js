@@ -1,6 +1,15 @@
 import express from 'express';
 import Birdhouse from "../models/Birdhouse.js";
 const router = express.Router();
+import notesRouter from './notes.js';
+
+router.use('/:birdhouseId/notes', (req, res, next) => {
+    req.birdhouseId = req.params.birdhouseId; // Koppel birdhouseId aan req-object
+    next();
+}, notesRouter);
+
+
+
 
 /************************
  ROUTES VOOR VOGELHUISJE
@@ -79,24 +88,24 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-/************************
- ROUTES VOOR NOTES VAN HET VOGELHUISJE
- ************************/
-router.get('/:id/notes', (req, res) => {
-    res.status(200).json({notes: `Notities voor vogelhuisje ${req.params.id}`});
-})
-
-router.post('/:id/notes', (req, res) => {
-    res.status(200).json({note: `Notitie voor vogelhuisje ${req.params.id}`});
-})
-
-router.put('/:id/notes', (req, res) => {
-    res.status(200).json({note: `Notitie edit voor vogelhuisje ${req.params.id}`});
-})
-
-router.delete('/:id/notes', (req, res) => {
-    res.status(200).json({recordings: `Verwijderd note voor vogelhuisje ${req.params.id}`});
-})
+// /************************
+//  ROUTES VOOR NOTES VAN HET VOGELHUISJE
+//  ************************/
+// router.get('/:id/notes', (req, res) => {
+//     res.status(200).json({notes: `Notities voor vogelhuisje ${req.params.id}`});
+// })
+//
+// router.post('/:id/notes', (req, res) => {
+//     res.status(200).json({note: `Notitie voor vogelhuisje ${req.params.id}`});
+// })
+//
+// router.put('/:id/notes', (req, res) => {
+//     res.status(200).json({note: `Notitie edit voor vogelhuisje ${req.params.id}`});
+// })
+//
+// router.delete('/:id/notes', (req, res) => {
+//     res.status(200).json({recordings: `Verwijderd note voor vogelhuisje ${req.params.id}`});
+// })
 
 /************************
  ROUTES VOOR RECORDINGS VAN HET VOGELHUISJE
