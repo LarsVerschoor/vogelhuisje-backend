@@ -54,28 +54,6 @@ router.post('/', async (req, res) => {
 });
 
 /**
- * @route PUT /notes/:note_id
- * @desc Update een bestaande notitie
- */
-router.put('/:note_id', async (req, res) => {
-    try {
-        const updatedNote = await Note.findOneAndUpdate(
-            { note_id: req.params.note_id },
-            req.body,
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedNote) {
-            return res.status(404).json({ success: false, message: 'Notitie niet gevonden' });
-        }
-
-        res.status(200).json({ success: true, message: 'Notitie succesvol geüpdatet', data: updatedNote });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het updaten van de notitie', error });
-    }
-});
-
-/**
  * @route DELETE /notes/:note_id
  * @desc Verwijder een specifieke notitie
  */

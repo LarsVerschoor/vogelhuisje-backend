@@ -56,27 +56,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-/**
- * @route PUT /shopitems/:item_id
- * @desc Update een bestaand winkelitem
- */
-router.put('/:item_id', async (req, res) => {
-    try {
-        const updatedShopItem = await ShopItem.findOneAndUpdate(
-            { item_id: req.params.item_id },
-            req.body,
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedShopItem) {
-            return res.status(404).json({ success: false, message: 'Winkelitem niet gevonden' });
-        }
-
-        res.status(200).json({ success: true, message: 'Winkelitem succesvol geüpdatet', data: updatedShopItem });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het updaten van het winkelitem', error });
-    }
-});
 
 /**
  * @route DELETE /shopitems/:item_id

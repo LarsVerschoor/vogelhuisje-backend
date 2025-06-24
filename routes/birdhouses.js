@@ -15,10 +15,6 @@ router.post('/', (req, res) => {
     res.status(200).json({birdhouse: 'Vogelhuisje aangemaakt'});
 });
 
-router.put('/:id', (req, res) => {
-    res.status(200).json({birdhouse: `Vogelhuisje ${req.params.id} aangepast`});
-});
-
 router.delete('/:id', (req, res) => {
     res.status(200).json({birdhouse: `Vogelhuisje ${req.params.id} verwijderd`});
 });

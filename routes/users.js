@@ -55,27 +55,9 @@ router.post('/', async (req, res) => {
     }
 });
 
-/**
- * @route PUT /users/:user_id
- * @desc Update gegevens van een bestaande gebruiker
- */
-router.put('/:user_id', async (req, res) => {
-    try {
-        const updatedUser = await User.findOneAndUpdate(
-            { user_id: req.params.user_id },
-            req.body,
-            { new: true, runValidators: true }
-        );
+router.patch('/:user_id', async (req, res) => {
 
-        if (!updatedUser) {
-            return res.status(404).json({ success: false, message: 'Gebruiker niet gevonden' });
-        }
-
-        res.status(200).json({ success: true, message: 'Gebruiker succesvol geüpdatet', data: updatedUser });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het updaten van de gebruiker', error });
-    }
-});
+})
 
 /**
  * @route DELETE /users/:user_id

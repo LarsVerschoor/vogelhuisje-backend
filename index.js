@@ -23,6 +23,24 @@ app.use('/', router);
 import usersRouter from './routes/users.js';
 app.use('/users', usersRouter);
 
+import shopsRouter from './routes/shopitems.js';
+app.use('/shopitems', shopsRouter);
+
+import notesRouter from './routes/notes.js';
+app.use('/notes', notesRouter);
+
+import rentalsRouter from './routes/rentals.js';
+app.use('/rentals', rentalsRouter);
+
+import camerasRouter from './routes/cameras.js';
+app.use('/cameras', camerasRouter);
+
+import recordingsRouter from './routes/recordings.js';
+app.use('/recordings', recordingsRouter);
+
+import birdhouseRouter from './routes/birdhouses.js';
+app.use('/birdhouses', birdhouseRouter);
+
 import User from './models/User.js';
 
 app.get('/test-create-user', async (req, res) => {
