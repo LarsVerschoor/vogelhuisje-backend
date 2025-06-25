@@ -46,9 +46,9 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Birdhouse not found' });
         }
         res.status(200).json(birdhouse);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' , err});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
         const rentals = await Rental.find();
         res.status(200).json({ success: true, data: rentals });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van huurcontracten', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -28,7 +29,8 @@ router.get('/:rental_id', async (req, res) => {
         }
         res.status(200).json({ success: true, data: rental });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van het huurcontract', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -52,7 +54,8 @@ router.post('/', async (req, res) => {
         await newRental.save();
         res.status(201).json({ success: true, message: 'Huurcontract succesvol aangemaakt', data: newRental });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het aanmaken van het huurcontract', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -70,7 +73,8 @@ router.delete('/:rental_id', async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Huurcontract succesvol verwijderd', data: deletedRental });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het verwijderen van het huurcontract', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

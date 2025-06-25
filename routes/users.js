@@ -13,7 +13,8 @@ router.get('/', async (req, res) => {
         const users = await User.find();
         res.status(200).json({ success: true, data: users });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van gebruikers', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -35,7 +36,8 @@ router.get('/:user_id', requireAuth, async (req, res) => {
             created_at: user.created_at
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van de gebruiker', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -58,7 +60,8 @@ router.post('/', async (req, res) => {
         await newUser.save();
         res.status(201).json({ success: true, message: 'Gebruiker succesvol aangemaakt', data: newUser });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het aanmaken van de gebruiker', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -80,7 +83,8 @@ router.delete('/:user_id', async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Gebruiker succesvol verwijderd', data: deletedUser });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het verwijderen van de gebruiker', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

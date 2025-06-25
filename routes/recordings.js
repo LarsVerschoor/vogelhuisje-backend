@@ -16,7 +16,8 @@ router.get('/', async (req, res) => {
         const recordings = await Recording.find(filter);
         res.status(200).json({ success: true, data: recordings });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van opnames', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -32,7 +33,8 @@ router.get('/:recording_id', async (req, res) => {
         }
         res.status(200).json({ success: true, data: recording });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van de opname', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -57,7 +59,8 @@ router.post('/', async (req, res) => {
         await newRecording.save();
         res.status(201).json({ success: true, message: 'Opname succesvol aangemaakt', data: newRecording });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het aanmaken van de opname', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -75,7 +78,8 @@ router.delete('/:recording_id', async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Opname succesvol verwijderd', data: deletedRecording });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het verwijderen van de opname', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -95,7 +99,8 @@ router.patch('/:recording_id', async (req, res) => {
         }
         res.status(200).json({ success: true, message: 'Opname succesvol bijgewerkt', data: updatedRecording });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het bijwerken van de opname', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

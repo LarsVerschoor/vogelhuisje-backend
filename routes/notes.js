@@ -17,11 +17,8 @@ router.get('/', async (req, res) => {
         const notes = await Note.find({ birdhouse: birdhouseId });
         res.status(200).json({ success: true, data: notes });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Fout bij het ophalen van de notities',
-            error,
-        });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 
 });
@@ -72,9 +69,9 @@ router.post('/', async (req, res) => {
         });
         await note.save();
         res.status(201).json(note);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Could not save note', err });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -92,7 +89,8 @@ router.delete('/:note_id', async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Notitie succesvol verwijderd', data: deletedNote });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het verwijderen van de notitie', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

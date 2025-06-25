@@ -77,7 +77,8 @@ router.delete('/:item_id', async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Winkelitem succesvol verwijderd', data: deletedShopItem });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het verwijderen van het winkelitem', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 
 
@@ -87,7 +88,6 @@ router.use((err, req, res, next) => {
     res.status(500).json({
         success: false,
         message: 'Internal server error',
-        error: err.message
     });
 });
 
