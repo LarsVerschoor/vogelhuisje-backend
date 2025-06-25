@@ -37,6 +37,7 @@ router.get('/:id', async (req, res) => {
         if (!note) {
             return res.status(404).json({ message: 'Note not found' });
         }
+        console.log('get /:id')
 
         res.status(200).json(note);
     } catch (err) {
@@ -48,6 +49,7 @@ router.get('/:id', async (req, res) => {
 router.get('/birdhouse/:birdhouseId/notes', async (req, res) => {
     try {
         const notes = await Note.find({ birdhouse: req.params.birdhouseId }).sort({ createdAt: -1 });
+        console.log('get /birdhouse/:birdhouseId/notes')
         res.status(200).json(notes);
     } catch (err) {
         console.error(err);
@@ -59,16 +61,15 @@ router.get('/birdhouse/:birdhouseId/notes', async (req, res) => {
  * @route POST /notes/
  * @desc Maak een nieuwe notitie aan
  */
-router.post('/:birdhouseId', async (req, res) => {
+router.post('/', async (req, res) => {
     const { content } = req.body;
-    const birdhouseId = req.params.birdhouseId;
+    const birdhouseId = req.birdhouseId;
 
     try {
         const note = new Note({
             birdhouse: birdhouseId,
             content,
         });
-
         await note.save();
         res.status(201).json(note);
     } catch (err) {
