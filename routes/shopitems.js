@@ -1,99 +1,53 @@
 import express from 'express';
-import ShopItem from '../models/ShopItem.js'; // Zorg ervoor dat het pad klopt voor jouw projectstructuur
 
 const router = express.Router();
 
-/**
- * @route GET /shopitems/
- * @desc Haal een lijst van alle winkelitems op
- */
-router.get('/', async (req, res) => {
-    try {
-        const shopItems = await ShopItem.find();
-        res.status(200).json({ success: true, data: shopItems });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van de winkelitems', error });
+let shopItems = [
+    {
+        item_id: 1,
+        name: "Standaard Vogelhuisje",
+        description: "Basismodel van grenenhout",
+        price: 19.99,
+        image_url: "",
+        stock_quantity: 50
     }
+];
+
+router.get('/shopitems', (req, res) => {
+    res.json({ success: true, data: shopItems });
 });
 
-/**
- * @route GET /shopitems/:item_id
- * @desc Haal een specifiek winkelitem op
- */
-router.get('/:item_id', async (req, res) => {
-    try {
-        const shopItem = await ShopItem.findOne({ item_id: req.params.item_id });
-        if (!shopItem) {
-            return res.status(404).json({ success: false, message: 'Winkelitem niet gevonden' });
-        }
-        res.status(200).json({ success: true, data: shopItem });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van het winkelitem', error });
-    }
+router.get('/:item_id', (req, res) => {
+    const item = shopItems.find(i => i.item_id == req.params.item_id);
+    if (!item) return res.status(404).json({ success: false, message: 'Item niet gevonden' });
+    res.json({ success: true, data: item });
 });
 
-/**
- * @route POST /shopitems/
- * @desc Maak een nieuw winkelitem aan
- */
-router.post('/', async (req, res) => {
-    const { item_id, name, description, price, image_url, stock_quantity } = req.body;
+router.post('/', (req, res) => {
+    const newItem = {
+        item_id: shopItems.length + 1,
+        name: req.body.name,
+        description: req.body.description || "",
+        price: req.body.price,
+        image_url: req.body.image_url || "",
+        stock_quantity: req.body.stock_quantity || 0
+    };
 
-    try {
-        const newShopItem = new ShopItem({
-            item_id,
-            name,
-            description,
-            price,
-            image_url,
-            stock_quantity
-        });
-
-        await newShopItem.save();
-        res.status(201).json({ success: true, message: 'Winkelitem succesvol aangemaakt', data: newShopItem });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het aanmaken van het winkelitem', error });
-    }
+    shopItems.push(newItem);
+    res.status(201).json({ success: true, data: newItem });
 });
 
-/**
- * @route PUT /shopitems/:item_id
- * @desc Update een bestaand winkelitem
- */
-router.put('/:item_id', async (req, res) => {
-    try {
-        const updatedShopItem = await ShopItem.findOneAndUpdate(
-            { item_id: req.params.item_id },
-            req.body,
-            { new: true, runValidators: true }
-        );
+router.put('/:item_id', (req, res) => {
+    const index = shopItems.findIndex(i => i.item_id == req.params.item_id);
+    if (index === -1) return res.status(404).json({ success: false, message: 'Item niet gevonden' });
 
-        if (!updatedShopItem) {
-            return res.status(404).json({ success: false, message: 'Winkelitem niet gevonden' });
-        }
-
-        res.status(200).json({ success: true, message: 'Winkelitem succesvol geüpdatet', data: updatedShopItem });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het updaten van het winkelitem', error });
-    }
+    shopItems[index] = { ...shopItems[index], ...req.body };
+    res.json({ success: true, data: shopItems[index] });
 });
 
-/**
- * @route DELETE /shopitems/:item_id
- * @desc Verwijder een specifiek winkelitem
- */
-router.delete('/:item_id', async (req, res) => {
-    try {
-        const deletedShopItem = await ShopItem.findOneAndDelete({ item_id: req.params.item_id });
-
-        if (!deletedShopItem) {
-            return res.status(404).json({ success: false, message: 'Winkelitem niet gevonden' });
-        }
-
-        res.status(200).json({ success: true, message: 'Winkelitem succesvol verwijderd', data: deletedShopItem });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het verwijderen van het winkelitem', error });
-    }
+router.delete('/:item_id', (req, res) => {
+    shopItems = shopItems.filter(i => i.item_id != req.params.item_id);
+    res.json({ success: true, message: 'Item verwijderd' });
 });
 
 export default router;

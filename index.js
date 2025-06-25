@@ -5,10 +5,12 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import shopitems from './routes/shopitems.js';
 
 const app = express();
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
+app.use('/shopitems', shopitems);
 
 let users = [];
 let currentUserId = 1;
