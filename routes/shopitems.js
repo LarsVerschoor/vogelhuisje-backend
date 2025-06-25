@@ -1,6 +1,10 @@
 import express from 'express';
-
 const router = express.Router();
+
+router.use((req, res, next) => {
+    console.log('[ShopItems] Request ontvangen:', req.method, req.path);
+    next();
+});
 
 let shopItems = [
     {
@@ -8,46 +12,61 @@ let shopItems = [
         name: "Standaard Vogelhuisje",
         description: "Basismodel van grenenhout",
         price: 19.99,
-        image_url: "",
-        stock_quantity: 50
+        image_url: "https://via.placeholder.com/150?text=Standaard",
+        stock_quantity: 50,
+        size: "Middel",
+        sale: false,
+        oldPrice: null
+    },
+    {
+        item_id: 2,
+        name: "Luxe Vogelhuisje",
+        description: "Gemaakt van eikenhout",
+        price: 29.99,
+        image_url: "https://via.placeholder.com/150?text=Luxe",
+        stock_quantity: 30,
+        size: "Groot",
+        sale: true,
+        oldPrice: 34.99
     }
 ];
 
-router.get('/shopitems', (req, res) => {
-    res.json({ success: true, data: shopItems });
+router.get('/', (req, res) => {
+    console.log('[ShopItems] Alle items opgevraagd');
+    res.json({
+        success: true,
+        data: shopItems,
+        message: 'Shop items retrieved successfully',
+        count: shopItems.length
+    });
 });
 
 router.get('/:item_id', (req, res) => {
+    console.log('[ShopItems] Item opgevraagd:', req.params.item_id);
     const item = shopItems.find(i => i.item_id == req.params.item_id);
-    if (!item) return res.status(404).json({ success: false, message: 'Item niet gevonden' });
-    res.json({ success: true, data: item });
+
+    if (!item) {
+        console.log('[ShopItems] Item niet gevonden:', req.params.item_id);
+        return res.status(404).json({
+            success: false,
+            message: 'Item not found'
+        });
+    }
+
+    res.json({
+        success: true,
+        data: item,
+        message: 'Item retrieved successfully'
+    });
 });
 
-router.post('/', (req, res) => {
-    const newItem = {
-        item_id: shopItems.length + 1,
-        name: req.body.name,
-        description: req.body.description || "",
-        price: req.body.price,
-        image_url: req.body.image_url || "",
-        stock_quantity: req.body.stock_quantity || 0
-    };
-
-    shopItems.push(newItem);
-    res.status(201).json({ success: true, data: newItem });
-});
-
-router.put('/:item_id', (req, res) => {
-    const index = shopItems.findIndex(i => i.item_id == req.params.item_id);
-    if (index === -1) return res.status(404).json({ success: false, message: 'Item niet gevonden' });
-
-    shopItems[index] = { ...shopItems[index], ...req.body };
-    res.json({ success: true, data: shopItems[index] });
-});
-
-router.delete('/:item_id', (req, res) => {
-    shopItems = shopItems.filter(i => i.item_id != req.params.item_id);
-    res.json({ success: true, message: 'Item verwijderd' });
+router.use((err, req, res, next) => {
+    console.error('[ShopItems] Error:', err);
+    res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: err.message
+    });
 });
 
 export default router;
