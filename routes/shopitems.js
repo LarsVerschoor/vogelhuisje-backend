@@ -1,5 +1,7 @@
 import express from 'express';
 const router = express.Router();
+import ShopItem from '../models/ShopItem.js';
+
 
 router.use((req, res, next) => {
     console.log('[ShopItems] Request ontvangen:', req.method, req.path);
@@ -60,7 +62,6 @@ router.get('/:item_id', (req, res) => {
     });
 });
 
-<<<<<<< HEAD
 
 /**
  * @route DELETE /shopitems/:item_id
@@ -78,7 +79,9 @@ router.delete('/:item_id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: 'Fout bij het verwijderen van het winkelitem', error });
     }
-=======
+
+
+});
 router.use((err, req, res, next) => {
     console.error('[ShopItems] Error:', err);
     res.status(500).json({
@@ -86,7 +89,6 @@ router.use((err, req, res, next) => {
         message: 'Internal server error',
         error: err.message
     });
->>>>>>> Koens-BE
 });
 
 export default router;
