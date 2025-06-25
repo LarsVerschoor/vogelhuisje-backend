@@ -1,8 +1,11 @@
 import mongoose from 'mongoose';
 
 const NoteSchema = new mongoose.Schema({
-    note_id: { type: Number, unique: true, required: true },
-    rental_id: { type: Number, required: true, ref: 'rental' },
+    birdhouse: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Birdhouse',
+        required: true
+    },
     content: { type: String },
     created_at: { type: Date, default: Date.now }
 });
