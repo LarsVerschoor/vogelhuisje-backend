@@ -1,61 +1,66 @@
 import express from 'express';
-import ShopItem from '../models/ShopItem.js'; // Zorg ervoor dat het pad klopt voor jouw projectstructuur
-
 const router = express.Router();
 
-/**
- * @route GET /shopitems/
- * @desc Haal een lijst van alle winkelitems op
- */
-router.get('/', async (req, res) => {
-    try {
-        const shopItems = await ShopItem.find();
-        res.status(200).json({ success: true, data: shopItems });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van de winkelitems', error });
-    }
+router.use((req, res, next) => {
+    console.log('[ShopItems] Request ontvangen:', req.method, req.path);
+    next();
 });
 
-/**
- * @route GET /shopitems/:item_id
- * @desc Haal een specifiek winkelitem op
- */
-router.get('/:item_id', async (req, res) => {
-    try {
-        const shopItem = await ShopItem.findOne({ item_id: req.params.item_id });
-        if (!shopItem) {
-            return res.status(404).json({ success: false, message: 'Winkelitem niet gevonden' });
-        }
-        res.status(200).json({ success: true, data: shopItem });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van het winkelitem', error });
+let shopItems = [
+    {
+        item_id: 1,
+        name: "Standaard Vogelhuisje",
+        description: "Basismodel van grenenhout",
+        price: 19.99,
+        image_url: "https://via.placeholder.com/150?text=Standaard",
+        stock_quantity: 50,
+        size: "Middel",
+        sale: false,
+        oldPrice: null
+    },
+    {
+        item_id: 2,
+        name: "Luxe Vogelhuisje",
+        description: "Gemaakt van eikenhout",
+        price: 29.99,
+        image_url: "https://via.placeholder.com/150?text=Luxe",
+        stock_quantity: 30,
+        size: "Groot",
+        sale: true,
+        oldPrice: 34.99
     }
+];
+
+router.get('/', (req, res) => {
+    console.log('[ShopItems] Alle items opgevraagd');
+    res.json({
+        success: true,
+        data: shopItems,
+        message: 'Shop items retrieved successfully',
+        count: shopItems.length
+    });
 });
 
-/**
- * @route POST /shopitems/
- * @desc Maak een nieuw winkelitem aan
- */
-router.post('/', async (req, res) => {
-    const { item_id, name, description, price, image_url, stock_quantity } = req.body;
+router.get('/:item_id', (req, res) => {
+    console.log('[ShopItems] Item opgevraagd:', req.params.item_id);
+    const item = shopItems.find(i => i.item_id == req.params.item_id);
 
-    try {
-        const newShopItem = new ShopItem({
-            item_id,
-            name,
-            description,
-            price,
-            image_url,
-            stock_quantity
+    if (!item) {
+        console.log('[ShopItems] Item niet gevonden:', req.params.item_id);
+        return res.status(404).json({
+            success: false,
+            message: 'Item not found'
         });
-
-        await newShopItem.save();
-        res.status(201).json({ success: true, message: 'Winkelitem succesvol aangemaakt', data: newShopItem });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het aanmaken van het winkelitem', error });
     }
+
+    res.json({
+        success: true,
+        data: item,
+        message: 'Item retrieved successfully'
+    });
 });
 
+<<<<<<< HEAD
 
 /**
  * @route DELETE /shopitems/:item_id
@@ -73,6 +78,15 @@ router.delete('/:item_id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: 'Fout bij het verwijderen van het winkelitem', error });
     }
+=======
+router.use((err, req, res, next) => {
+    console.error('[ShopItems] Error:', err);
+    res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: err.message
+    });
+>>>>>>> Koens-BE
 });
 
 export default router;
