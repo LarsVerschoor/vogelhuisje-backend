@@ -64,8 +64,8 @@ router.get('/:item_id', (req, res) => {
 
 
 /**
- * @route DELETE /shopitems/:item_id
- * @desc Verwijder een specifiek winkelitem
+ * @route 
+ * @desc
  */
 router.delete('/:item_id', async (req, res) => {
     try {
