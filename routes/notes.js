@@ -3,32 +3,55 @@ import Note from '../models/Note.js'; // Zorg ervoor dat het pad klopt voor jouw
 
 const router = express.Router();
 
+
 /**
  * @route GET /notes/
  * @desc Haal een lijst op van alle notities
  */
 router.get('/', async (req, res) => {
     try {
-        const notes = await Note.find();
+        const birdhouseId = req.birdhouseId; // Verkrijg birdhouseId vanuit de middleware
+        console.log('BirdhouseId binnen GET /notes:', birdhouseId);
+
+        // Haal alleen notities op van dit birdhouseId
+        const notes = await Note.find({ birdhouse: birdhouseId });
         res.status(200).json({ success: true, data: notes });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van de notities', error });
+        res.status(500).json({
+            success: false,
+            message: 'Fout bij het ophalen van de notities',
+            error,
+        });
     }
+
 });
 
 /**
  * @route GET /notes/:note_id
  * @desc Haal een specifieke notitie op
  */
-router.get('/:note_id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const note = await Note.findOne({ note_id: req.params.note_id });
+        const note = await Note.findById(req.params.id);
+
         if (!note) {
-            return res.status(404).json({ success: false, message: 'Notitie niet gevonden' });
+            return res.status(404).json({ message: 'Note not found' });
         }
-        res.status(200).json({ success: true, data: note });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van de notitie', error });
+
+        res.status(200).json(note);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+router.get('/birdhouse/:birdhouseId/notes', async (req, res) => {
+    try {
+        const notes = await Note.find({ birdhouse: req.params.birdhouseId }).sort({ createdAt: -1 });
+        res.status(200).json(notes);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Could not fetch notes' });
     }
 });
 
@@ -36,42 +59,21 @@ router.get('/:note_id', async (req, res) => {
  * @route POST /notes/
  * @desc Maak een nieuwe notitie aan
  */
-router.post('/', async (req, res) => {
-    const { note_id, rental_id, content } = req.body;
+router.post('/:birdhouseId', async (req, res) => {
+    const { content } = req.body;
+    const birdhouseId = req.params.birdhouseId;
 
     try {
-        const newNote = new Note({
-            note_id,
-            rental_id,
-            content
+        const note = new Note({
+            birdhouse: birdhouseId,
+            content,
         });
 
-        await newNote.save();
-        res.status(201).json({ success: true, message: 'Notitie succesvol aangemaakt', data: newNote });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het aanmaken van de notitie', error });
-    }
-});
-
-/**
- * @route PUT /notes/:note_id
- * @desc Update een bestaande notitie
- */
-router.put('/:note_id', async (req, res) => {
-    try {
-        const updatedNote = await Note.findOneAndUpdate(
-            { note_id: req.params.note_id },
-            req.body,
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedNote) {
-            return res.status(404).json({ success: false, message: 'Notitie niet gevonden' });
-        }
-
-        res.status(200).json({ success: true, message: 'Notitie succesvol geüpdatet', data: updatedNote });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het updaten van de notitie', error });
+        await note.save();
+        res.status(201).json(note);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Could not save note', err });
     }
 });
 

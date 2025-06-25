@@ -56,27 +56,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-/**
- * @route PUT /cameras/:camera_id
- * @desc Update gegevens van een bestaande camera
- */
-router.put('/:camera_id', async (req, res) => {
-    try {
-        const updatedCamera = await Camera.findOneAndUpdate(
-            { camera_id: req.params.camera_id },
-            req.body,
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedCamera) {
-            return res.status(404).json({ success: false, message: 'Camera niet gevonden' });
-        }
-
-        res.status(200).json({ success: true, message: 'Camera succesvol geüpdatet', data: updatedCamera });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het updaten van de camera', error });
-    }
-});
 
 /**
  * @route DELETE /cameras/:camera_id

@@ -1,4 +1,5 @@
 import express from 'express';
+<<<<<<< HEAD
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
@@ -48,5 +49,15 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+=======
+
+import login from "../controllers/auth/login.js";
+import register from "../controllers/auth/register.js";
+
+const router = express.Router();
+
+router.post('/login', login);
+router.post('/register', register);
+>>>>>>> 489eae762a5a11fdda5a645f572992aab7e75b5d
 
 export default router;

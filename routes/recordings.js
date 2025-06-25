@@ -57,28 +57,6 @@ router.post('/', async (req, res) => {
 });
 
 /**
- * @route PUT /recordings/:recording_id
- * @desc Update een bestaande opname
- */
-router.put('/:recording_id', async (req, res) => {
-    try {
-        const updatedRecording = await Recording.findOneAndUpdate(
-            { recording_id: req.params.recording_id },
-            req.body,
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedRecording) {
-            return res.status(404).json({ success: false, message: 'Opname niet gevonden' });
-        }
-
-        res.status(200).json({ success: true, message: 'Opname succesvol geüpdatet', data: updatedRecording });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het updaten van de opname', error });
-    }
-});
-
-/**
  * @route DELETE /recordings/:recording_id
  * @desc Verwijder een specifieke opname
  */

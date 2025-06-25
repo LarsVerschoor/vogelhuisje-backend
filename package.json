@@ -19,11 +19,20 @@
     "dev": "node --watch index.js"
   },
   "dependencies": {
+<<<<<<< HEAD
     "bcryptjs": "^3.0.2",
+=======
+    "bcrypt": "^6.0.0",
+>>>>>>> 489eae762a5a11fdda5a645f572992aab7e75b5d
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+<<<<<<< HEAD
     "mongoose": "^8.16.0"
+=======
+    "mongoose": "^8.16.0",
+    "ws": "^8.18.2"
+>>>>>>> 489eae762a5a11fdda5a645f572992aab7e75b5d
   }
 }

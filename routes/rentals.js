@@ -57,28 +57,6 @@ router.post('/', async (req, res) => {
 });
 
 /**
- * @route PUT /rentals/:rental_id
- * @desc Update een bestaand huurcontract
- */
-router.put('/:rental_id', async (req, res) => {
-    try {
-        const updatedRental = await Rental.findOneAndUpdate(
-            { rental_id: req.params.rental_id },
-            req.body,
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedRental) {
-            return res.status(404).json({ success: false, message: 'Huurcontract niet gevonden' });
-        }
-
-        res.status(200).json({ success: true, message: 'Huurcontract succesvol geüpdatet', data: updatedRental });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het updaten van het huurcontract', error });
-    }
-});
-
-/**
  * @route DELETE /rentals/:rental_id
  * @desc Verwijder een specifiek huurcontract
  */
