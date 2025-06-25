@@ -54,12 +54,13 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { birdhouse_id, location_description, is_available, price, camera_id, owner_id, added_at} = req.body;
+        const { birdhouse_id, location_description, is_available, image_url, price, camera_id, owner_id, added_at} = req.body;
 
         const newBirdhouse = new Birdhouse({
             birdhouse_id,
             location_description,
             is_available,
+            image_url,
             price,
             camera_id,
             owner_id,
