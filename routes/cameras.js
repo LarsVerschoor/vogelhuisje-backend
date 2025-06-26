@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
         const cameras = await Camera.find();
         res.status(200).json({ success: true, data: cameras });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van camera\'s', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -28,7 +29,8 @@ router.get('/:camera_id', async (req, res) => {
         }
         res.status(200).json({ success: true, data: camera });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het ophalen van de camera', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -52,7 +54,8 @@ router.post('/', async (req, res) => {
         await newCamera.save();
         res.status(201).json({ success: true, message: 'Camera succesvol aangemaakt', data: newCamera });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het aanmaken van de camera', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -71,7 +74,8 @@ router.delete('/:camera_id', async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Camera succesvol verwijderd', data: deletedCamera });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het verwijderen van de camera', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

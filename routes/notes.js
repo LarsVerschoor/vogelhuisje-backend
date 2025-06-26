@@ -17,11 +17,8 @@ router.get('/', async (req, res) => {
         const notes = await Note.find({ birdhouse: birdhouseId });
         res.status(200).json({ success: true, data: notes });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Fout bij het ophalen van de notities',
-            error,
-        });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 
 });
@@ -37,6 +34,7 @@ router.get('/:id', async (req, res) => {
         if (!note) {
             return res.status(404).json({ message: 'Note not found' });
         }
+        console.log('get /:id')
 
         res.status(200).json(note);
     } catch (err) {
@@ -48,6 +46,7 @@ router.get('/:id', async (req, res) => {
 router.get('/birdhouse/:birdhouseId/notes', async (req, res) => {
     try {
         const notes = await Note.find({ birdhouse: req.params.birdhouseId }).sort({ createdAt: -1 });
+        console.log('get /birdhouse/:birdhouseId/notes')
         res.status(200).json(notes);
     } catch (err) {
         console.error(err);
@@ -59,21 +58,20 @@ router.get('/birdhouse/:birdhouseId/notes', async (req, res) => {
  * @route POST /notes/
  * @desc Maak een nieuwe notitie aan
  */
-router.post('/:birdhouseId', async (req, res) => {
+router.post('/', async (req, res) => {
     const { content } = req.body;
-    const birdhouseId = req.params.birdhouseId;
+    const birdhouseId = req.birdhouseId;
 
     try {
         const note = new Note({
             birdhouse: birdhouseId,
             content,
         });
-
         await note.save();
         res.status(201).json(note);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Could not save note', err });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -91,7 +89,8 @@ router.delete('/:note_id', async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Notitie succesvol verwijderd', data: deletedNote });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Fout bij het verwijderen van de notitie', error });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

@@ -5,6 +5,7 @@ const BirdhouseSchema = new mongoose.Schema({
     location_description: { type: String },
     is_available: { type: Boolean, default: true },
     image_url: { type: String },
+    stream_url: { type: String },
     price: { type: mongoose.Types.Decimal128, required: true },
     camera_id: { type: Number, ref: 'camera' },
     owner_id: { type: Number, ref: 'user' },

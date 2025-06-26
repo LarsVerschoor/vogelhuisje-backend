@@ -50,21 +50,22 @@ router.get('/:id', async (req, res) => {
             return res.status(404).json({ message: 'Birdhouse not found' });
         }
         res.status(200).json(birdhouse);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' , err});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
 router.post('/', async (req, res) => {
     try {
-        const { birdhouse_id, location_description, is_available, image_url, price, camera_id, owner_id, added_at} = req.body;
+        const { birdhouse_id, location_description, is_available, image_url, stream_url, price, camera_id, owner_id, added_at} = req.body;
 
         const newBirdhouse = new Birdhouse({
             birdhouse_id,
             location_description,
             is_available,
             image_url,
+            stream_url,
             price,
             camera_id,
             owner_id,
