@@ -23,12 +23,12 @@ router.get('/', async (req, res) => {
             // Convert string to actual boolean
             query.is_available = req.query.is_available === 'true';
             let birdhouses = await Birdhouse.find({ is_available: true});
-            birdhouses.map((birdhouse) => ({
+            const birdhousesNew = birdhouses.map((birdhouse) => ({
                 ...birdhouse.toObject(),
                 price: parseFloat(birdhouse.price.toString()),
                 oldPrice: birdhouse.oldPrice ? parseFloat(birdhouse.oldPrice.toString()) : undefined
             }));
-            res.status(200).json(birdhouses);
+            res.status(200).json(birdhousesNew);
         } else {
             const birdhouses = await Birdhouse.find();
             console.log(req.query);
