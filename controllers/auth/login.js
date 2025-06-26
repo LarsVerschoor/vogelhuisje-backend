@@ -6,9 +6,11 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!(email && password)) return res.status(400).json({error: 'Invalid Request Body'});
-
+		
+console.log(email, password);
     try {
         const user = await User.findOne({ email }).select('_id email password_hash');
+	console.log(user)
         if (!user) {
             return res.status(401).json({error: 'This email is not linked to an account'});
         }
